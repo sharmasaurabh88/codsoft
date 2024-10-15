@@ -1,40 +1,29 @@
-	// Navbar
-  let menu = document.querySelector('#menu-icon');
-  let navbar = document.querySelector('.navbar');
-   
-  menu.onclick = () => {
-      navbar.classList.toggle('active');
+const display = document.querySelector(".display");
+const buttons = document.querySelectorAll("button");
+const specialChars = ["%", "*", "/", "-", "+", "="];
+let output = "";
+
+//Define function to calculate based on button clicked.
+const calculate = (btnValue) => {
+  display.focus();
+  if (btnValue === "=" && output !== "") {
+    //If output has '%', replace with '/100' before evaluating.
+    output = eval(output.replace("%", "/100"));
+  } else if (btnValue === "AC") {
+    output = "";
+  } else if (btnValue === "DEL") {
+    //If DEL button is clicked, remove the last character from the output.
+    output = output.toString().slice(0, -1);
+  } else {
+    //If output is empty and button is specialChars then return
+    if (output === "" && specialChars.includes(btnValue)) return;
+    output += btnValue;
   }
-   
-  window.onscroll = () => {
-      navbar.classList.remove('active');
-  }
-  // Dark Mode
-  let darkmode = document.querySelector('#darkmode');
-   
-  darkmode.onclick = () => {
-      if(darkmode.classList.contains('bx-moon')){
-          darkmode.classList.replace('bx-moon','bx-sun');
-          document.body.classList.add('active');
-      }else{
-          darkmode.classList.replace('bx-sun','bx-moon');
-          document.body.classList.remove('active');
-      }
-  }
-   
-  // Scroll Reveal
-  const sr = ScrollReveal ({
-      origin: 'top',
-      distance: '40px',
-      duration: 2000,
-      reset: true
-  });
-   
-   
-  sr.reveal(`.home-text, .home-img,
-              .about-img, .about-text,
-              .box, .s-box,
-              .btn, .connect-text,
-              .contact-box`, {
-      interval: 200
-  })
+  display.value = output;
+};
+
+//Add event listener to buttons, call calculate() on click.
+buttons.forEach((button) => {
+  //Button click listener calls calculate() with dataset value as argument.
+  button.addEventListener("click", (e) => calculate(e.target.dataset.value));
+});
